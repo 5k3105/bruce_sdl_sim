@@ -1,0 +1,137 @@
+
+
+
+
+ draw_mcchar(x,y,data,(color&0x7))
+ 
+ 
+func draw_mcchar(x,y int,  data, color uint8) {
+  for i:=0 ; i < 4 ; i++ {
+    /* color */
+    uint8_t c;
+    /* color source */
+    uint8_t cs = ((data >> i*2) & 0x3)
+    switch cs {
+    case 0:
+      c = bgcolor_[0] 
+    case 1:
+      c = bgcolor_[1]
+    case 2:
+      c = bgcolor_[2]
+    case 3:
+      c = color
+    }
+    int xoffs = x + 8 - i * 2 + horizontal_scroll()
+    screen_update_pixel(xoffs,y,c)
+    screen_update_pixel(xoffs + 1,y,c)
+  }
+}
+
+
+draw_char(int x, int y, uint8_t data, uint8_t color)
+{
+  for(int i=0 ; i < 8 ; i++)
+  {
+    int xoffs = x + 8 - i + horizontal_scroll();
+    /* don't draw outside (due to horizontal scroll) */
+    if(xoffs > kGFirstCol + kGResX)
+      continue;
+    /* draw pixel */
+    if(ISSET_BIT(data,i))
+    {
+      io_->screen_update_pixel(
+        xoffs, 
+        y,
+        color);
+    }
+  }
+}
+
+
+
+
+/* screen, character memory and bitmap addresses */
+    uint16_t screen_mem_;
+    uint16_t char_mem_;
+    uint16_t bitmap_mem_;
+    
+    
+func draw_raster_char_mode() {
+  //int rstr = raster_counter();
+  //int y = rstr - kFirstVisibleLine;
+  if((rstr >= kGFirstLine) && 
+     (rstr < kGLastLine) && 
+     !is_screen_off())
+  {
+    /* draw background */
+    io_->screen_draw_rect(kGFirstCol,y,kGResX,bgcolor_[0]);
+    /* draw characters */
+    for column:=0; column < kGCols ; column++ {
+
+      int x := kGFirstCol + column * 8
+      int line := rstr - kGFirstLine
+      int row := line/8
+      int char_row := line % 8
+      /* retrieve screen character */
+      uint8_t c = get_screen_char(column,row);
+      /* retrieve character bitmap data */
+      uint8_t data = get_char_data(c,char_row);
+      /* retrieve color data */
+      uint8_t color  := get_char_color(column, row);
+      /* draw character */
+      if graphic_mode_ == kMCCharMode && ISSET_BIT(color,3) {
+        draw_mcchar(x,y,data,(color&0x7))
+      } else {
+        draw_char(x,y,data,color);
+    }
+  }
+}    
+
+func get_screen_char(column, row int) uint8 {
+  uint16_t addr = screen_mem_ + (row * kGCols) + column
+  return mem_->vic_read_byte(addr)
+}
+
+func get_char_color(column, row int) uint8 {
+  uint16_t addr = Memory::kAddrColorRAM + (row * kGCols) + column;
+  return (mem_->read_byte_no_io(addr) & 0x0f);
+}
+
+func get_char_data(int chr, int line){
+  uint16_t addr = char_mem_ + (chr * 8) + line;
+  return mem_->vic_read_byte(addr);
+}
+
+func horizontal_scroll() int {
+	cr2_ := 0
+  return cr2_&0x7
+}
+
+  /* default memory pointers */
+  screen_mem_ = Memory::kBaseAddrScreen;
+  char_mem_   = Memory::kBaseAddrChars;
+  bitmap_mem_ = Memory::kBaseAddrBitmap;
+  
+    static const uint16_t kBaseAddrScreen = 0x0400;
+    static const uint16_t kBaseAddrChars  = 0xd000;
+    static const uint16_t kBaseAddrBitmap = 0x0000;
+    static const uint16_t kBaseAddrColorRAM = 0xd800;  
+
+    static const uint16_t kAddrColorRAM = 0xd800;  
+
+
+
+/// type Memory
+
+func vic_read_byte(addr uint16) uint8 {
+  uint8_t v
+  uint16_t vic_addr = cia2_->vic_base_address() + (addr & 0x3fff);
+  if((vic_addr >= 0x1000 && vic_addr <  0x2000) ||
+     (vic_addr >= 0x9000 && vic_addr <  0xa000))
+    v = mem_rom_[kBaseAddrChars + (vic_addr & 0xfff)];
+  else
+    v = read_byte_no_io(vic_addr);
+  return v;
+}
+
+

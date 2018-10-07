@@ -1,0 +1,43 @@
+package main
+
+import (
+	"io/ioutil"
+)
+
+var level_data map[int][]byte
+
+func load_level_data(filename string) { /// , baseaddr uint16
+	level_data = make(map[int][]byte)
+
+	file, err := ioutil.ReadFile("data/" + filename) /// ([]byte, error)
+	if err != nil {
+		println(err.Error)
+	}
+
+	parse_levels
+
+
+}
+
+
+	/*
+	level := 1
+
+	for _, data := range file {
+		if data == 0x80 {
+			level++
+			continue
+		}
+		level_data[level] = append(level_data[level], data)
+	}
+
+	println(level)
+
+	for i := 0; i < level; i++ {
+		println(i, len(level_data[i]))
+	}
+
+	   	for lvl, data := range level_data {
+	   		println(lvl, len(data))
+	   }
+	*/

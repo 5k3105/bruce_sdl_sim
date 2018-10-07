@@ -1,0 +1,86 @@
+ROM:0AD7 top:
+ROM:0AD7                 LDA     (data),Y
+ROM:0AD9                 BPL     load_x_index
+
+
+ROM:0ADB                 AND     #$7F            ; end byt=$80
+ROM:0ADD                 BEQ     exit		 	 ; loc_B30: set lanterns, enter level loop
+
+ROM:0ADF                 TAX
+ROM:0AE0                 JSR     inc_data        
+
+ROM:0AE3 data_read:            
+ROM:0AE3                 LDA     (data),Y
+ROM:0AE5                 BPL     non_repeater
+
+ROM:0AE7                 JSR     color_obstacle  ; OBSTACLE
+
+ROM:0AEA non_repeater:          
+ROM:0AEA                 STA     (scr_top),Y 
+ROM:0AEC                 ORA     #$80
+ROM:0AEE                 STA     (scr_bot),Y
+ROM:0AF0                 JSR     inc_scr_top
+ROM:0AF3                 JSR     inc_data
+ROM:0AF6                 JSR     inc_scr_bot
+ROM:0AF9                 JSR     inc_color_top
+ROM:0AFC                 JSR     inc_color_bot
+ROM:0AFF                 JSR     one_row
+ROM:0B02                 DEX
+ROM:0B03                 BNE     data_read
+
+ROM:0B05                 BEQ     top
+
+ROM:0B07 load_x_index:                             
+ROM:0B07                 TAX
+ROM:0B08                 JSR     inc_data
+
+ROM:0B0B repeater:                           
+ROM:0B0B                 LDA     (data),Y
+ROM:0B0D                 BPL     rep
+
+ROM:0B0F                 JSR     color_obstacle     ; OBSTACLE
+ROM:0B12 rep:                              
+ROM:0B12                 STA     (scr_top),Y
+ROM:0B14                 ORA     #$80
+ROM:0B16                 STA     (scr_bot),Y
+ROM:0B18                 JSR     inc_scr_top
+ROM:0B1B                 JSR     inc_scr_bot
+ROM:0B1E                 JSR     inc_color_bot
+ROM:0B21                 JSR     inc_color_top
+ROM:0B24                 JSR     one_row			; sub_485B one row
+ROM:0B27                 DEX
+ROM:0B28                 BNE     repeater
+
+ROM:0B2A                 JSR     inc_data
+ROM:0B2D                 JMP     top
+
+
+
+
+
+
+
+
+
+
+
+
+
+ROM:0B5F ; OBSTACLE color top & bot black and #$7f
+ROM:0B5F sub_B5F:                               
+ROM:0B5F                 PHA
+ROM:0B60                 LDA     #$F8            ; black
+ROM:0B62                 STA     ($10),Y
+ROM:0B64                 STA     ($12),Y
+ROM:0B66                 PLA
+ROM:0B67                 AND     #$7F
+ROM:0B69                 RTS
+
+color_obstacle:
+			c = 0xF8
+			addr := color_mem
+			mem_ram_[color_mem+soffs] = c
+			mem_ram_[color_mem+soffs+cols] = c // && 0x80
+			b &&= 0x7F	
+
+

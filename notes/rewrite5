@@ -1,0 +1,65 @@
+package main
+
+type level struct {
+	compressed	[]byte
+	screen	[]byte
+	color	[]byte
+	lanterns []byte
+	code []byte
+}
+
+
+levelmaps	= make(map[int]level)
+
+
+
+top:
+		b = bytes[boffs]
+		if !ISSET_BIT(b,7) {
+			r = true
+			goto init
+		}
+		if b == 0x80 { 
+			level++
+			goto top // map[level][]bytes // compressed []bytes , uncompressed: []screen, []color
+		}
+		r = false
+		
+init:
+		x = b
+		boffs++
+
+data_read:
+		b = bytes[boffs]
+		if !ISSET_BIT(b,7) {
+			goto write_screen
+		}
+		c = 0xF8
+		mem_ram_[color_mem+soffs] = c
+		mem_ram_[color_mem+soffs+cols] = c
+		b &= 0x7F		
+
+write_screen:	
+		mem_ram_[screen_mem+soffs] = b
+		mem_ram_[screen_mem+soffs+cols] = b || 0x80
+		if !r {		
+			boffs++
+		}
+		soffs++
+		
+		ccol--
+		if ccol == 0 {
+			ccol = cols
+			soffs += cols
+		}
+
+		x--
+		if x != 0 {
+			goto data_read
+		}
+		if r {		
+			boffs++
+		}
+		goto top
+
+

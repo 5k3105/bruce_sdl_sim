@@ -1,0 +1,64 @@
+ROM:4B34                 .BYTE $F9 ; ·           ; 0 lv data lo
+ROM:4B35                 .BYTE   9               ; 1
+ROM:4B36                 .BYTE $3E ; >           ; 2
+ROM:4B37                 .BYTE $9D ; ¥           ; 3
+ROM:4B38                 .BYTE $1B               ; 4
+ROM:4B39                 .BYTE $82 ; é           ; 5
+ROM:4B3A                 .BYTE $DD ; ¦           ; 6
+ROM:4B3B                 .BYTE $27 ; '           ; 7
+ROM:4B3C                 .BYTE $11               ; 8
+ROM:4B3D                 .BYTE $91 ; æ           ; 9
+ROM:4B3E                 .BYTE $D8 ; +           ; a
+ROM:4B3F                 .BYTE $4C ; L           ; b
+ROM:4B40                 .BYTE $43 ; C           ; c
+ROM:4B41                 .BYTE $C6 ; ¦           ; d
+ROM:4B42                 .BYTE $46 ; F           ; e
+ROM:4B43                 .BYTE $B4 ; ¦           ; f
+ROM:4B44                 .BYTE $5C ; \           ; 10
+ROM:4B45                 .BYTE $8D ; ì           ; 11
+ROM:4B46                 .BYTE $90 ; É           ; 12
+ROM:4B47                 .BYTE $E0 ; a           ; 13
+ROM:4B48                 .BYTE $E0 ; a
+ROM:4B49 unk_4B49:       .BYTE $68 ; h           ; 0 lv data hi  68f9
+ROM:4B4A                 .BYTE $6A ; j           ; 1  6a09
+ROM:4B4B                 .BYTE $6B ; k           ; 2  6b3e
+ROM:4B4C                 .BYTE $6C ; l           ; 3  6c9d
+ROM:4B4D                 .BYTE $6E ; n           ; 4
+ROM:4B4E                 .BYTE $6F ; o           ; 5
+ROM:4B4F                 .BYTE $70 ; p           ; 6
+ROM:4B50                 .BYTE $72 ; r           ; 7
+ROM:4B51                 .BYTE $73 ; s           ; 8
+ROM:4B52                 .BYTE $74 ; t           ; 9
+ROM:4B53                 .BYTE $75 ; u           ; a
+ROM:4B54                 .BYTE $77 ; w           ; b
+ROM:4B55                 .BYTE $78 ; x           ; c
+ROM:4B56                 .BYTE $79 ; y           ; d
+ROM:4B57                 .BYTE $7A ; z           ; e
+ROM:4B58                 .BYTE $7B ; {           ; f
+ROM:4B59                 .BYTE $7C ; |           ; 10
+ROM:4B5A                 .BYTE $7D ; }           ; 11
+ROM:4B5B                 .BYTE $7E ; ~           ; 12
+ROM:4B5C                 .BYTE $7F ;            ; 13  7fe0
+
+
+
+68F9
+6A09
+6B3E
+6C9D
+6E1B
+6F82
+70DD
+7227
+7311
+7491
+75D8
+774C
+7843
+79C6
+7A46
+7BB4
+7C5C
+7D8D
+7E90
+7FE0
